@@ -7,6 +7,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamInvitationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TournamentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,16 @@ Route::prefix('admin')
         Route::get('/', [AdminController::class, 'panel'])->name('panel');
         Route::post('/mint', [AdminController::class, 'mintDomicoins'])->name('mint');
     });
+
+//Vista de Torneos
+    
+Route::prefix('tournaments')->middleware('auth')->group(function () {
+    Route::get('/', [TournamentController::class, 'index'])->name('tournaments.index');
+    Route::get('/{id}', [TournamentController::class, 'show'])->name('tournaments.show');
+    Route::post('/{id}/register', [TournamentController::class, 'register'])->name('tournaments.register');
+    Route::delete('/{id}/unregister', [TournamentController::class, 'unregister'])->name('tournaments.unregister');
+});
+
 
 
 // Registro y edición de perfil de jugador

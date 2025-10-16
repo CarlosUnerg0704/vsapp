@@ -66,6 +66,13 @@
                     <span>Teams</span></a>
             </li>
 
+            <!-- Nav Item - Tournaments -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('tournaments.index') }}">
+                    <i class="fas fa-trophy"></i>
+                    <span>Torneos</span>
+                </a>
+            </li>
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
