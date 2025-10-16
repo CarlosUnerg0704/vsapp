@@ -2,40 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Tournament;
 use App\Models\TournamentRegistration;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TournamentController extends Controller
 {
     public function index()
     {
-        $tournaments = Tournament::all();
-        return view('tournaments.index', compact('tournaments'));
-    }
-
-    public function show($id)
-    {
-        $tournament = Tournament::with('registrations.user')->findOrFail($id);
+        $tournaments = Tournament::with('registrations')->get();
         $user = Auth::user();
-        $isRegistered = $tournament->registrations()->where('user_id', $user->id)->exists();
-        return view('tournaments.show', compact('tournament', 'isRegistered'));
+
+        return view('tournaments.index', compact('tournaments', 'user'));
     }
 
     public function register($id)
     {
-        $tournament = Tournament::findOrFail($id);
         $user = Auth::user();
-        $tournament->registrations()->firstOrCreate(['user_id' => $user->id]);
-        return redirect()->route('tournaments.show', $id);
+        $tournament = Tournament::findOrFail($id);
+
+        if (!$tournament->participants->contains($user->id)) {
+            TournamentRegistration::create([
+                'tournament_id' => $id,
+                'user_id' => $user->id,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Registrado con éxito');
     }
 
     public function unregister($id)
     {
-        $tournament = Tournament::findOrFail($id);
         $user = Auth::user();
-        $tournament->registrations()->where('user_id', $user->id)->delete();
-        return redirect()->route('tournaments.show', $id);
+        TournamentRegistration::where('tournament_id', $id)
+            ->where('user_id', $user->id)
+            ->delete();
+
+        return redirect()->back()->with('success', 'Has abandonado el torneo');
+    }
+
+    public function create()
+    {
+        return view('tournaments.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:1vs1,5vs5',
+            'scheduled_at' => 'required|date',
+        ]);
+
+        Tournament::create($request->all());
+
+        return redirect()->route('admin.panel')->with('success', 'Torneo creado con éxito');
     }
 }

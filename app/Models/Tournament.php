@@ -2,24 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tournament extends Model
 {
-    protected $fillable = ['name', 'date', 'time'];
+    use HasFactory;
+
+    protected $fillable = ['name', 'type', 'scheduled_at'];
 
     public function registrations()
     {
         return $this->hasMany(TournamentRegistration::class);
     }
 
-    public function users()
+    public function participants()
     {
         return $this->belongsToMany(User::class, 'tournament_registrations');
     }
-
-    public function games()
-    {
-        return $this->hasMany(Game::class);
-    }
 }
+

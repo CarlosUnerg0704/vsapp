@@ -54,12 +54,15 @@ Route::prefix('admin')
 
 //Vista de Torneos
     
-Route::prefix('tournaments')->middleware('auth')->group(function () {
-    Route::get('/', [TournamentController::class, 'index'])->name('tournaments.index');
-    Route::get('/{id}', [TournamentController::class, 'show'])->name('tournaments.show');
-    Route::post('/{id}/register', [TournamentController::class, 'register'])->name('tournaments.register');
-    Route::delete('/{id}/unregister', [TournamentController::class, 'unregister'])->name('tournaments.unregister');
+Route::middleware(['auth'])->prefix('tournaments')->name('tournaments.')->group(function () {
+    Route::get('/', [TournamentController::class, 'index'])->name('index');
+    Route::post('/{id}/register', [TournamentController::class, 'register'])->name('register');
+    Route::post('/{id}/unregister', [TournamentController::class, 'unregister'])->name('unregister');
 });
+
+// Ruta para creación de torneos (solo para administradores)
+Route::middleware(['auth', 'is_admin'])->get('/admin/create-tournament', [TournamentController::class, 'create'])->name('tournaments.create');
+Route::middleware(['auth', 'is_admin'])->post('/admin/store-tournament', [TournamentController::class, 'store'])->name('tournaments.store');
 
 
 

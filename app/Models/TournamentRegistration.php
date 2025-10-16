@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TournamentRegistration extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['tournament_id', 'user_id'];
 
     public function tournament()
@@ -18,3 +21,4 @@ class TournamentRegistration extends Model
         return $this->belongsTo(User::class);
     }
 }
+
