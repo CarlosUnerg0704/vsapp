@@ -32,5 +32,41 @@
                 </form>
             </div>
         </div>
+
+        <div class="card shadow mb-4 mt-5">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Crear Torneo</h6>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('tournaments.store') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="name">Nombre del Torneo</label>
+                <input type="text" name="name" id="name" class="form-control" required>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="date">Fecha</label>
+                <input type="date" name="date" id="date" class="form-control" required>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="time">Hora</label>
+                <input type="time" name="time" id="time" class="form-control" required>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="type">Tipo de Torneo</label>
+                <select name="type" id="type" class="form-control" required>
+                    <option value="1v1">1 vs 1</option>
+                    <option value="5v5">5 vs 5</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success mt-4">Crear Torneo</button>
+        </form>
+    </div>
+</div>
+
     </div>
 </x-app-layout> 
