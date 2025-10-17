@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tournaments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->enum('type', ['1vs1', '5vs5']);
-            $table->datetime('scheduled_at');
-            $table->timestamps();
+        Schema::table('tournaments', function (Blueprint $table) {
+            //
         });
-
     }
 
     /**
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tournaments');
+        Schema::table('tournaments', function (Blueprint $table) {
+            //
+        });
     }
 };

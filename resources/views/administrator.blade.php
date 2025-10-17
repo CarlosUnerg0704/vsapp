@@ -40,31 +40,32 @@
     <div class="card-body">
         <form action="{{ route('tournaments.store') }}" method="POST">
             @csrf
-            <div class="form-group">
-                <label for="name">Nombre del Torneo</label>
-                <input type="text" name="name" id="name" class="form-control" required>
+            <div class="mb-4">
+                <label for="name">Nombre del torneo:</label>
+                <input type="text" name="name" id="name" class="form-input mt-1 block w-full" required>
             </div>
 
-            <div class="form-group mt-3">
-                <label for="date">Fecha</label>
-                <input type="date" name="date" id="date" class="form-control" required>
+            <div class="mb-4">
+                <label for="date">Fecha:</label>
+                <input type="date" name="date" id="date" class="form-input mt-1 block w-full" required>
             </div>
 
-            <div class="form-group mt-3">
-                <label for="time">Hora</label>
-                <input type="time" name="time" id="time" class="form-control" required>
+            <div class="mb-4">
+                <label for="time">Hora:</label>
+                <input type="time" name="time" id="time" class="form-input mt-1 block w-full" required>
             </div>
 
-            <div class="form-group mt-3">
-                <label for="type">Tipo de Torneo</label>
-                <select name="type" id="type" class="form-control" required>
-                    <option value="1v1">1 vs 1</option>
-                    <option value="5v5">5 vs 5</option>
+            <div class="mb-4">
+                <label for="type">Tipo de torneo:</label>
+                <select name="type" id="type" class="form-select mt-1 block w-full" required>
+                    <option value="1vs1">1 vs 1</option>
+                    <option value="5vs5">5 vs 5</option>
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success mt-4">Crear Torneo</button>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">Crear Torneo</button>
         </form>
+
     </div>
 </div>
 
