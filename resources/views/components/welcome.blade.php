@@ -73,7 +73,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $domicoinsAvailable }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                            <i class="fas fa-wallet fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -82,87 +82,31 @@
 
     </div>
 
-
-    <!-- Row: Tournaments & Top Players -->
+    <!-- Row: Top Players & News -->
     <div class="row">
 
-        <!-- Upcoming Tournaments & News -->
+        <!-- Top Players -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Upcoming Tournaments & News</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Top 3 Players by Winrate</h6>
                 </div>
                 <div class="card-body">
-                    <p>No tournaments or news available yet.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top 3 Players by Winrate -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Top 3 Players by Winrate</h6>
-    </div>
-    <div class="card-body">
-        <table class="table table-bordered" width="100%" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Player</th>
-                    <th>Winrate</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($topPlayers as $player)
-                    <tr>
-                        <td>{{ $player->profile->summoner_name ?? $player->name }}</td>
-                        <td>{{ $player->winrate }}%</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="2" class="text-center text-muted">No data yet.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
-    </div>
-
-    <!-- Row: Recent Games & Top Teams -->
-    <div class="row">
-
-        <!-- Recent Games -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Recent Games</h6>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" width="100%" cellspacing="0">
+                    <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Match</th>
-                                <th>Winner</th>
-                                <th>Date</th>
+                                <th>Jugador</th>
+                                <th>Winrate</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($recentGames as $game)
+                            @forelse($topPlayers as $player)
                                 <tr>
-                                    <td>{{ $game->team1->name }} vs {{ $game->team2->name }}</td>
-                                    <td>
-                                        <span class="badge {{ $game->winner_id == $game->team1_id ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $game->winner->name ?? 'N/A' }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $game->played_at?->format('d/m/Y') }}</td>
+                                    <td>{{ $player->profile->summoner_name ?? $player->name }}</td>
+                                    <td>{{ $player->winrate }}%</td>
                                 </tr>
                             @empty
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted">No games recorded yet.</td>
-                                </tr>
+                                <tr><td colspan="2" class="text-center text-muted">No data yet.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -170,30 +114,106 @@
             </div>
         </div>
 
-
-        <!-- Top 3 Teams -->
+        <!-- News Placeholder -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Top 3 Teams (Win Rate)</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Noticias / Torneos Próximos</h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">No hay noticias o torneos programados aún.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Row: Recent Games & Top Teams -->
+    <div class="row">
+
+        <!-- Recent Games -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Juegos Recientes</h6>
+                </div>
+                <div class="card-body">
+                    @if($recentGames->isEmpty())
+                        <p class="text-muted text-center">No hay juegos registrados aún.</p>
+                    @else
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Torneo</th>
+                                        <th>Jugador / Equipo 1</th>
+                                        <th>Jugador / Equipo 2</th>
+                                        <th>Ganador</th>
+                                        <th>Fecha</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($recentGames as $game)
+                                        <tr>
+                                            <td>{{ $game->tournament->name ?? '—' }}</td>
+                                            <td>
+                                                @if($game->player1)
+                                                    {{ $game->player1->profile->summoner_name ?? $game->player1->name }}
+                                                @else
+                                                    {{ optional($game->team1)->name ?? '—' }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($game->player2)
+                                                    {{ $game->player2->profile->summoner_name ?? $game->player2->name }}
+                                                @else
+                                                    {{ optional($game->team2)->name ?? '—' }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($game->winnerPlayer)
+                                                    <span class="badge bg-success">
+                                                        {{ $game->winnerPlayer->profile->summoner_name ?? $game->winnerPlayer->name }}
+                                                    </span>
+                                                @elseif($game->winningTeam)
+                                                    <span class="badge bg-success">
+                                                        {{ $game->winningTeam->name }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-secondary">Pendiente</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $game->played_at?->format('d/m/Y H:i') ?? '—' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Teams -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 3 Equipos (Winrate)</h6>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
                         @forelse($topTeams as $team)
-                            <li class="list-group-item">
-                                {{ $team->name }} - {{ $team->winrate }}%
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ $team->name }}
+                                <span class="badge bg-info text-white">{{ $team->winrate }}%</span>
                             </li>
                         @empty
-                            <li class="list-group-item text-muted text-center">
-                                No teams yet.
-                            </li>
+                            <li class="list-group-item text-muted text-center">No hay equipos aún.</li>
                         @endforelse
                     </ul>
                 </div>
             </div>
         </div>
 
-
     </div>
-
 </div>
