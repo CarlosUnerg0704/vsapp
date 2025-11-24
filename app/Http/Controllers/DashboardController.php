@@ -15,15 +15,19 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $recentGames = Game::with(['team1','team2','winner'])
-            ->orderByDesc('played_at')
-            ->limit(5)
-            ->get();
+        $recentGames = Game::orderByDesc('played_at')->limit(5)->get();
+
+        // Cargar relaciones dinámicas según el tipo de juego
+        $recentGames->load([
+            'team1', 'team2',
+            'player1.profile', 'player2.profile',
+            'winningTeam', 'winnerPlayer.profile'
+        ]);
 
         $topPlayers = User::with('participations')->get()
             ->map(function ($player) {
                 $total = $player->participations->count();
-                $wins  = $player->participations->where('result', 'win')->count();
+                $wins = $player->participations->where('result', 'win')->count();
                 $player->winrate = $total > 0 ? round(($wins / $total) * 100, 1) : 0;
                 $player->games_played = $total;
                 return $player;

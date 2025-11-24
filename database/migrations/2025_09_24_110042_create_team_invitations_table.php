@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
-            $table->unsignedInteger('team_id');
+            $table->unsignedBigInteger('team_id');
 
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->string('type')->default('invite'); // invite o response

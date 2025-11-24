@@ -5,13 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Game;
+use Carbon\Carbon;
 
 
 class Tournament extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'date', 'time', 'type'];
+    protected $fillable = ['name', 'type','entry_fee', 'scheduled_at'];
+
+    protected $casts = [
+        'scheduled_at' => 'datetime',
+    ];
 
 
     public function registrations()
@@ -28,6 +33,37 @@ class Tournament extends Model
     {
         return $this->hasMany(Game::class);
     }
+
+public function getStatusAttribute(): string
+{
+    $now = Carbon::now('UTC');
+    $start = $this->scheduled_at->copy()->setTimezone('UTC');
+
+    $hasGames = $this->games()->exists();
+    $lastRound = $this->games()->max('round');
+    $lastGames = $this->games()->where('round', $lastRound)->get();
+
+    $hasWinner = $lastGames->count() > 0 && $lastGames->every(function ($game) {
+        return $this->type === '1vs1'
+            ? $game->winner_player_id !== null
+            : $game->winner_id !== null;
+    });
+
+    if ($hasWinner) return 'finalizado';
+
+    $minutesToStart = $now->diffInMinutes($start, false);
+
+    if ($minutesToStart > 10) {
+        return 'registro';
+    } elseif ($minutesToStart <= 10 && $minutesToStart > 0) {
+        return 'preinicio';
+    } elseif ($now->gte($start)) {
+        return 'en_proceso';
+    }
+
+    return 'desconocido';
+}
+
 
 }
 

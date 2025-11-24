@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('game_id');
 
             // teams.id = INT UNSIGNED
-            $table->unsignedInteger('team_id');
+            $table->unsignedBigInteger('team_id')->nullable();
 
             // users.id = BIGINT UNSIGNED (si Jetstream está activo)
             $table->unsignedBigInteger('user_id');

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     */
+     
     public function up()
     {
         Schema::table('team_invitations', function (Blueprint $table) {
@@ -18,13 +18,10 @@ return new class extends Migration
     }
 
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('team_invitations', function (Blueprint $table) {
             //
         });
-    }
+    }*/
 };
