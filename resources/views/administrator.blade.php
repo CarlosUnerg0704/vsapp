@@ -57,12 +57,15 @@
                         <input type="text" name="name" id="name" class="form-input mt-1 block w-full" required>
                     </div>
 
+<<<<<<< HEAD
                     <div>
                         <label for="entry_fee" class="block text-sm font-medium">Costo de entrada (Domicoins)</label>
                         <input type="number" name="entry_fee" id="entry_fee" step="0.01" min="0" class="form-input mt-1 block w-full"required>
                     </div>
 
 
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label for="date" class="block text-sm font-medium">Fecha</label>

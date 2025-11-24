@@ -12,7 +12,11 @@ class Tournament extends Model
 {
     use HasFactory;
 
+<<<<<<< HEAD
     protected $fillable = ['name', 'type','entry_fee', 'scheduled_at'];
+=======
+    protected $fillable = ['name', 'type', 'scheduled_at'];
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
 
     protected $casts = [
         'scheduled_at' => 'datetime',

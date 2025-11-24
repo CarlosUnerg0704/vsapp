@@ -12,8 +12,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Services\GameService;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\DB;
 
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
 
 class TournamentController extends Controller
 {
@@ -22,8 +25,21 @@ class TournamentController extends Controller
      *  ============================ */
     
     public function index(GameService $gameService)
+<<<<<<< HEAD
 {
     $user = Auth::user();
+=======
+    {
+        $tournaments = Tournament::with('registrations')->get();
+
+        foreach ($tournaments as $tournament) {
+            if ($tournament->status === 'preinicio' && !$tournament->games()->exists()) {
+                $gameService->generateInitialMatches($tournament);
+            }
+        }
+
+        $user = Auth::user();
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
 
     // Cargamos torneos con sus registros y juegos
     $tournaments = Tournament::with(['registrations', 'games'])->get();
@@ -38,12 +54,15 @@ class TournamentController extends Controller
         }
     }
 
+<<<<<<< HEAD
     // Volvemos a cargar la relación 'games' por si se acaban de crear
     $tournaments->load('games');
 
     return view('tournaments.index', compact('tournaments', 'user'));
 }
 
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
 
     /** ============================
      *  REGISTRARSE EN UN TORNEO
@@ -61,6 +80,7 @@ class TournamentController extends Controller
                 ->with('error', 'Ya estás registrado en este torneo.');
         }
 
+<<<<<<< HEAD
         // Verificar créditos (domicoins)
         $wallet = $user->wallet;
 
@@ -69,6 +89,8 @@ class TournamentController extends Controller
                 ->with('error', 'No tienes suficientes Domicoins para registrarte.');
         }
 
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
         // Comparar hora actual (UTC) con hora programada (UTC)
         $nowUTC = Carbon::now('UTC');
         $scheduledUTC = $tournament->scheduled_at->copy()->setTimezone('UTC');
@@ -80,6 +102,7 @@ class TournamentController extends Controller
                 ->with('error', 'El registro ya está cerrado.');
         }
 
+<<<<<<< HEAD
         //try/cath
         DB::beginTransaction();
 
@@ -123,6 +146,12 @@ class TournamentController extends Controller
             return back()->with('error', 'Ocurrió un error al registrarte.');
         }
 
+=======
+        TournamentRegistration::create([
+            'tournament_id' => $tournament->id,
+            'user_id'       => $user->id,
+        ]);
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
 
         return redirect()->route('tournaments.show', $tournament->id)
             ->with('success', 'Te has registrado exitosamente en el torneo.');
@@ -163,7 +192,10 @@ class TournamentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+<<<<<<< HEAD
             'entry_fee'  => 'required|numeric|min:0',
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
             'type' => 'required|in:1vs1,5vs5',
             'date' => 'required|date',
             'time' => 'required|date_format:H:i',
@@ -177,7 +209,10 @@ class TournamentController extends Controller
 
         $tournament = Tournament::create([
             'name'         => $request->name,
+<<<<<<< HEAD
             'entry_fee'    => $request->entry_fee,
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
             'type'         => $request->type,
             'scheduled_at' => $scheduledAtLocal,
         ]);
@@ -202,6 +237,7 @@ class TournamentController extends Controller
             ->where('user_id', auth()->id())
             ->exists();
 
+<<<<<<< HEAD
         // 🕓 Comparar en UTC para los botones
         $nowUTC = Carbon::now('UTC');
         $scheduledUTC = $tournament->scheduled_at
@@ -220,6 +256,20 @@ class TournamentController extends Controller
         $scheduledDisplay = $tournament->scheduled_at
             ? $tournament->scheduled_at->copy()->timezone(config('app.timezone'))
             : null;
+=======
+        /**
+         * 🕓 HORAS SIN DESFASE: comparar todo en UTC para precisión
+         */
+        $nowUTC = Carbon::now('UTC');
+        $scheduledUTC = $tournament->scheduled_at->copy()->setTimezone('UTC');
+
+        // ✅ CORRECCIÓN AQUÍ: minutos positivos si falta, negativos si ya pasó
+        $minutesToStart = $nowUTC->diffInMinutes($scheduledUTC, false);
+        $tournamentStarted = $nowUTC->gte($scheduledUTC);
+
+        // Mostrar hora local al usuario
+        $scheduledDisplay = $tournament->scheduled_at->copy()->timezone(config('app.timezone'));
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
 
         /**
          * 🔘 Lógica de botones:
@@ -231,7 +281,11 @@ class TournamentController extends Controller
 
         $role = strtolower(auth()->user()->role ?? '');
         if (in_array($role, ['player', 'captain', 'jugador'])) {
+<<<<<<< HEAD
             if (!$userRegistered && $minutesToStart !== null && $minutesToStart > 10) {
+=======
+            if (!$userRegistered && $minutesToStart > 10) {
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
                 $showRegisterBtn = true;
             }
             if ($userRegistered && !$tournamentStarted) {
@@ -240,6 +294,7 @@ class TournamentController extends Controller
         }
 
         /**
+<<<<<<< HEAD
          * 🧩 Autogenerar llaves usando EL MISMO status del modelo
          */
         $status = $tournament->status; // usa el accessor getStatusAttribute()
@@ -254,6 +309,16 @@ class TournamentController extends Controller
         }
 
         // Cargar juegos con relaciones para mostrar los brackets
+=======
+         * 🧩 Autogenerar llaves cuando el torneo comience
+         */
+        $hasGames = $tournament->games()->exists();
+        if ($tournamentStarted && !$hasGames) {
+            $this->generateMatches($tournament);
+        }
+
+        // Cargar juegos
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
         $games = $tournament->games()
             ->with(['player1.profile', 'player2.profile', 'team1', 'team2', 'winnerPlayer', 'winningTeam'])
             ->get();
@@ -269,7 +334,10 @@ class TournamentController extends Controller
         ));
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
     /** ============================
      *  GENERAR PARTIDAS (ROUND 1)
      *  ============================ */
@@ -291,6 +359,12 @@ class TournamentController extends Controller
 
             $player1 = User::find($player1Id);
             $player2 = User::find($player2Id);
+<<<<<<< HEAD
+=======
+
+            $team1Id = $player1->current_team_id ?? null;
+            $team2Id = $player2->current_team_id ?? null;
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
 
             $team1Id = $player1->current_team_id ?? null;
             $team2Id = $player2->current_team_id ?? null;
@@ -328,8 +402,11 @@ class TournamentController extends Controller
         }
     }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
     /** ============================
      *  DEFINIR GANADOR
      *  ============================ */

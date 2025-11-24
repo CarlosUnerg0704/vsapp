@@ -21,7 +21,10 @@
         <div class="bg-white shadow sm:rounded-lg p-6 space-y-8">
             {{-- Detalles del torneo --}}
             <div class="border-b pb-4">
+<<<<<<< HEAD
                 <p><strong>Nombre del Torneo: </strong>{{$tournament->name}}</p>
+=======
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
                 <p><strong>Formato:</strong> {{ strtoupper($tournament->type) }}</p>
                 <p><strong>Programado para:</strong>
                     {{ optional($tournament->scheduled_at)->timezone(config('app.timezone'))->format('Y-m-d H:i') }}
@@ -78,6 +81,7 @@
                 @endif
             </div>
 
+<<<<<<< HEAD
             {{-- ========================= --}}
             {{--   LLAVES / BRACKETS       --}}
             {{-- ========================= --}}
@@ -201,6 +205,10 @@
                     </div>
                 @endif
             </div>
+=======
+            {{-- BRACKETS (sin cambios estructurales, ya incluías lógica robusta) --}}
+            {{-- ... resto del código que ya tienes para mostrar llaves y partidas ... --}}
+>>>>>>> 4302d7e3ddabe5ba475e2ada0bb399f36d8c99b4
         </div>
     </div>
 </x-app-layout>
