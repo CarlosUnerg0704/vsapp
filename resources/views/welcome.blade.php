@@ -16,31 +16,44 @@
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     </head>
     <body id="page-top">
+        
         <!-- Navigation-->
-        @if (Route::has('login'))
+        
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container px-5">
 
-        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
-            
-            <div class="container px-5">
+            <a href="{{ url('/dashboard') }}" class="navbar-brand">Home</a>
 
-                <a href="{{ url('/dashboard') }}" class="navbar-brand">Home</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarResponsive">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                @auth
-                @else
-                <div class="collapse navbar-collapse" id="navbarResponsive"> 
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Log in</a></li>
-                        @if (Route::has('register'))
-                        <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
-                        @endif
+            <div class="collapse navbar-collapse" id="navbarResponsive"> 
+                <ul class="navbar-nav ms-auto">
+
+                    @auth
+                        {{-- Aquí puedes poner enlaces para usuarios logueados --}}
                     @endauth
-                        
-                    </ul>
-                </div>
+
+                    @guest
+                        <li class="nav-item">
+                            <a href="{{ route('login') }}" class="nav-link">Log in</a>
+                        </li>
+
+                        @if (Route::has('register'))
+                        <li class="nav-item">
+                            <a href="{{ route('register') }}" class="nav-link">Register</a>
+                        </li>
+                        @endif
+                    @endguest
+
+                </ul>
             </div>
-            @endif
-        </nav>
+
+        </div>
+    </nav>
+
         <!-- Header-->
         <header class="masthead text-center text-white">
             <div class="masthead-content">
